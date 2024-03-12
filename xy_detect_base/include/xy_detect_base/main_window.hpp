@@ -52,6 +52,7 @@ public:
   float img_center_y = 180.0;
   bool in_cam_check;
   bool in_center_check;
+  mobile_base_msgs::mani_vision vision;
 
 public Q_SLOTS:
   void slotUpdateImg();

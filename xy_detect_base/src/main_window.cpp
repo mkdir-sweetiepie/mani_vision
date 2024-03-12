@@ -166,25 +166,22 @@ cv::Mat MainWindow::Binary(cv::Mat& img, int val[])
 
 void MainWindow::publishInCam(bool in_cam_check)
 {
-  mobile_base_msgs::mani_vision in_cam_msg;
-  in_cam_msg.in_cam = in_cam_check;
-  qnode.in_cam_pub.publish(in_cam_msg);
+  vision.in_cam = in_cam_check;
+  qnode.in_cam_pub.publish(vision);
 }
 
 void MainWindow::publishInCenter(bool in_center_check)
 {
-  mobile_base_msgs::mani_vision in_center_msg;
-  in_center_msg.in_center = in_center_check;
-  qnode.in_center_pub.publish(in_center_msg);
+  vision.in_center = in_center_check;
+  qnode.in_center_pub.publish(vision);
 }
 
 void MainWindow::publishDifference(int diff_x, int diff_y)
 {
-  mobile_base_msgs::mani_vision difference_msg;
-  difference_msg.difference[0] = static_cast<float>(diff_x);
-  difference_msg.difference[1] = static_cast<float>(diff_y);
-  difference_msg.difference[2] = 0.0;  // 0 값 할당
-  qnode.difference_pub.publish(difference_msg);
+  vision.difference[0] = static_cast<float>(diff_x);
+  vision.difference[1] = static_cast<float>(diff_y);
+  vision.difference[2] = 0.0;  // 0 값 할당
+  qnode.difference_pub.publish(vision);
 }
 
 }  // namespace xy_detect_base
