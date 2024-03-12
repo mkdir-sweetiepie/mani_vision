@@ -56,9 +56,7 @@ public:
   image_transport::Subscriber subImage;                           // 서브스크라이버
   void callbackImage(const sensor_msgs::ImageConstPtr& msg_img);  // 이미지 콜백 함수 선언
 
-  ros::Publisher in_cam_pub;
-  ros::Publisher in_center_pub;
-  ros::Publisher difference_pub;
+  ros::Publisher mani_vision_pub;
 
 Q_SIGNALS:
   void rosShutdown();
