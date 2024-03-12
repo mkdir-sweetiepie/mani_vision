@@ -55,9 +55,7 @@ bool QNode::init()
   image_transport::ImageTransport image(n);  // 이미지 전송을 위한 ImageTransport 객체 생성
   subImage = image.subscribe("/camera/color/image_raw", 1, &QNode::callbackImage, this);  // 서브스크라이버
 
-  in_cam_pub = n.advertise<mobile_base_msgs::mani_vision>("in_cam_topic", 1);
-  in_center_pub = n.advertise<mobile_base_msgs::mani_vision>("in_center_topic", 1);
-  difference_pub = n.advertise<mobile_base_msgs::mani_vision>("difference_topic", 10);
+  mani_vision_pub = n.advertise<mobile_base_msgs::mani_vision>("xy_detect", 1);
 
   start();
   return true;

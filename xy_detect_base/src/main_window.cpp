@@ -54,12 +54,15 @@ void MainWindow::slotUpdateImg()
   Find_Binary_img(clone_mat);
   blue_img(clone_mat);
 
+  mvis_pub();
+
   QImage RGB_im((const unsigned char*)(clone_mat.data), clone_mat.cols, clone_mat.rows, QImage::Format_RGB888);
   ui.label->setPixmap(QPixmap::fromImage(RGB_im));
 
   delete qnode.imgRaw;  // 동적 할당된 원본 이미지 메모리 해제
   qnode.imgRaw = NULL;
   qnode.isreceived = false;  // 이미지 수신 플래그 재설정
+
 }
 
 //파란색 이미지
@@ -84,7 +87,6 @@ void MainWindow::blue_img(cv::Mat& img)
   {
     in_cam_check = true;
   }
-  publishInCam(in_cam_check);
 
   // 각 객체 영역에 바운딩 박스 표시하기
   for (int i = 1; i < cnt; i++)
@@ -106,10 +108,17 @@ void MainWindow::blue_img(cv::Mat& img)
     diff_x = object_center_x - img_center_x;
     diff_y = object_center_y - img_center_y;
 
-    in_center_check = (diff_x == 0 && diff_y == 0);
-    publishInCenter(in_center_check);
+    if(diff_x<15&&diff_x>-15){
+      in_center_x=true;
+    }
+    else {in_center_x=false;}
 
-    publishDifference(diff_x, diff_y);
+    if(diff_y<15&&diff_y>-15){
+      in_center_y=true;
+    }
+    else {in_center_y=false;}
+
+    in_center_check = (in_center_x && in_center_x);
 
     std::cout << in_cam_check << std::endl;
     std::cout << in_center_check << std::endl;
@@ -164,24 +173,14 @@ cv::Mat MainWindow::Binary(cv::Mat& img, int val[])
   return binaryImage;
 }
 
-void MainWindow::publishInCam(bool in_cam_check)
-{
-  vision.in_cam = in_cam_check;
-  qnode.in_cam_pub.publish(vision);
-}
+void MainWindow::mvis_pub(){
 
-void MainWindow::publishInCenter(bool in_center_check)
-{
-  vision.in_center = in_center_check;
-  qnode.in_center_pub.publish(vision);
-}
-
-void MainWindow::publishDifference(int diff_x, int diff_y)
-{
-  vision.difference[0] = static_cast<float>(diff_x);
-  vision.difference[1] = static_cast<float>(diff_y);
-  vision.difference[2] = 0.0;  // 0 값 할당
-  qnode.difference_pub.publish(vision);
+  mvis.difference[0]=diff_x;
+  mvis.difference[1]=diff_y;
+  mvis.difference[2]=0;
+  mvis.in_cam=in_cam_check;
+  mvis.in_center=in_center_check;
+  qnode.mani_vision_pub.publish(mvis);
 }
 
 }  // namespace xy_detect_base
