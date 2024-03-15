@@ -10,5 +10,8 @@ bool in_cam # detecting one is in cam.
 bool in_center 
 float32[3] difference
 
-bool turn # left true , right false
-float32 gradient
+float32 center_depth  
+float32 high_depth  
+float32 low_depth  
+
+float32[3] gradient

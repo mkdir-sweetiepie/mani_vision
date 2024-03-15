@@ -59,10 +59,15 @@ void MainWindow::slotUpdateImg()
   QImage RGB_im((const unsigned char*)(clone_mat.data), clone_mat.cols, clone_mat.rows, QImage::Format_RGB888);
   ui.label->setPixmap(QPixmap::fromImage(RGB_im));
 
+  ui.m_1->display(mvis.difference[0]);
+  ui.m_2->display(mvis.difference[1]);
+  ui.m_3->display(mvis.difference[2]);
+  ui.m_4->display(mvis.in_cam);
+  ui.m_5->display(mvis.in_center);
+
   delete qnode.imgRaw;  // 동적 할당된 원본 이미지 메모리 해제
   qnode.imgRaw = NULL;
   qnode.isreceived = false;  // 이미지 수신 플래그 재설정
-
 }
 
 //파란색 이미지
@@ -108,21 +113,29 @@ void MainWindow::blue_img(cv::Mat& img)
     diff_x = object_center_x - img_center_x;
     diff_y = object_center_y - img_center_y;
 
-    if(diff_x<15&&diff_x>-15){
-      in_center_x=true;
+    if (diff_x < 15 && diff_x > -15)
+    {
+      in_center_x = true;
     }
-    else {in_center_x=false;}
+    else
+    {
+      in_center_x = false;
+    }
 
-    if(diff_y<15&&diff_y>-15){
-      in_center_y=true;
+    if (diff_y < 15 && diff_y > -15)
+    {
+      in_center_y = true;
     }
-    else {in_center_y=false;}
+    else
+    {
+      in_center_y = false;
+    }
 
     in_center_check = (in_center_x && in_center_x);
 
-    std::cout << in_cam_check << std::endl;
-    std::cout << in_center_check << std::endl;
-    std::cout << "Object " << i << " center offset: x = " << diff_x << ", y = " << diff_y << std::endl;
+    //   std::cout << in_cam_check << std::endl;
+    //   std::cout << in_center_check << std::endl;
+    //   std::cout << "Object " << i << " center offset: x = " << diff_x << ", y = " << diff_y << std::endl;
   }
 }  // namespace xy_detect_base
 
@@ -164,6 +177,9 @@ cv::Mat MainWindow::Binary(cv::Mat& img, int val[])
   cv::Mat blurredImage;
   cv::GaussianBlur(hsvImg, blurredImage, cv::Size(5, 5), 0);
 
+  cv::Mat mask = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3, 3), cv::Point(1, 1));
+  cv::erode(blurredImage, blurredImage, mask, cv::Point(-1, -1), 1);
+
   // HSV 이미지를 사용하여 범위 내의 색상을 임계값으로 설정
   cv::Scalar lower(val[0], val[1], val[2]);
   cv::Scalar upper(val[3], val[4], val[5]);
@@ -173,13 +189,13 @@ cv::Mat MainWindow::Binary(cv::Mat& img, int val[])
   return binaryImage;
 }
 
-void MainWindow::mvis_pub(){
-
-  mvis.difference[0]=diff_x;
-  mvis.difference[1]=diff_y;
-  mvis.difference[2]=0;
-  mvis.in_cam=in_cam_check;
-  mvis.in_center=in_center_check;
+void MainWindow::mvis_pub()
+{
+  mvis.difference[0] = diff_x;
+  mvis.difference[1] = diff_y;
+  mvis.difference[2] = 0;
+  mvis.in_cam = in_cam_check;
+  mvis.in_center = in_center_check;
   qnode.mani_vision_pub.publish(mvis);
 }
 
