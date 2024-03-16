@@ -55,6 +55,10 @@ bool QNode::init()
   image_transport::ImageTransport image(n);  // 이미지 전송을 위한 ImageTransport 객체 생성
   subImage = image.subscribe("/camera/color/image_raw", 1, &QNode::callbackImage, this);  // 서브스크라이버
 
+  image_transport::CameraSubscriber sub_;
+  std::string image_topic = n.resolveName("camera/aligned_depth_to_color/image_raw");
+  sub_ = image.subscribeCamera(image_topic, 1024, &QNode::callbackDepth, this);
+
   mani_vision_pub = n.advertise<mobile_base_msgs::mani_vision>("xy_detect", 1);
 
   start();
@@ -85,6 +89,33 @@ void QNode::callbackImage(const sensor_msgs::ImageConstPtr& msg_img)
       Q_EMIT sigRcvImg();  // 이미지 수신을 알리는 시그널 발생
       isreceived = true;
     }
+  }
+}
+
+void QNode::callbackDepth(const sensor_msgs::ImageConstPtr& image_msg, const sensor_msgs::CameraInfoConstPtr& info_msg)
+{
+  cv::Mat image;
+  cv_bridge::CvImagePtr input_bridge;
+  try
+  {
+    input_bridge = cv_bridge::toCvCopy(image_msg, sensor_msgs::image_encodings::TYPE_16UC1);
+    image = input_bridge->image;
+  }
+  catch (cv_bridge::Exception& e)
+  {
+    ROS_ERROR("[draw_frames] Failed to convert image");
+    return;
+  }
+
+  if (in_center_check)
+  {
+    // 이미지의 중심 좌표 계산
+    int center_x = image.cols / 2;
+    int center_y = image.rows / 2;
+
+    depth_in_mm = image.at<short int>(cv::Point(center_x, center_y));
+
+    in_center_check = false;
   }
 }
 

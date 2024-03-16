@@ -26,11 +26,15 @@
 #include <QStringListModel>
 #include <QString>
 #include <sensor_msgs/Image.h>
+
 #include "std_msgs/Bool.h"
+#include "std_msgs/Float32.h"
 #include "std_msgs/Float32MultiArray.h"
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
 #include <mobile_base_msgs/mani_vision.h>
+#include "sensor_msgs/image_encodings.h"
+#include "librealsense2/rsutil.h"
 
 /*****************************************************************************
 ** Namespaces
@@ -51,10 +55,16 @@ public:
   bool init();
   void run();
 
-  cv::Mat* imgRaw = NULL;                                         // 원본 이미지를 가리키는 포인터
-  bool isreceived = false;                                        // 수신 여부를 나타내는 플래그
-  image_transport::Subscriber subImage;                           // 서브스크라이버
+  cv::Mat* imgRaw = NULL;   // 원본 이미지를 가리키는 포인터
+  bool isreceived = false;  // 수신 여부를 나타내는 플래그
+
+  bool in_center_check = false;
+  float depth_in_mm;
+
+  image_transport::Subscriber subImage;  // 서브스크라이버
+
   void callbackImage(const sensor_msgs::ImageConstPtr& msg_img);  // 이미지 콜백 함수 선언
+  void callbackDepth(const sensor_msgs::ImageConstPtr& image_msg, const sensor_msgs::CameraInfoConstPtr& info_msg);
 
   ros::Publisher mani_vision_pub;
 

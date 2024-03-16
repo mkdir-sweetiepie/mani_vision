@@ -64,6 +64,10 @@ void MainWindow::slotUpdateImg()
   ui.m_3->display(mvis.difference[2]);
   ui.m_4->display(mvis.in_cam);
   ui.m_5->display(mvis.in_center);
+  
+  ui.m_6->display(mvis.center_depth);
+  ui.m_7->display(mvis.high_depth);
+  ui.m_8->display(mvis.low_depth);
 
   delete qnode.imgRaw;  // 동적 할당된 원본 이미지 메모리 해제
   qnode.imgRaw = NULL;
@@ -74,7 +78,7 @@ void MainWindow::slotUpdateImg()
 void MainWindow::blue_img(cv::Mat& img)
 {
   in_cam_check = false;
-  in_center_check = false;
+  qnode.in_center_check = false;
 
   int blue_hsw_value[6] = { 0, 187, 60, 40, 255, 255 };  // low h, low s, low v, high h, high s, high v
   cv::Mat blue_img = Binary(img, blue_hsw_value);        // 파란색 이진화
@@ -131,7 +135,7 @@ void MainWindow::blue_img(cv::Mat& img)
       in_center_y = false;
     }
 
-    in_center_check = (in_center_x && in_center_x);
+    qnode.in_center_check = (in_center_x && in_center_x);
 
     //   std::cout << in_cam_check << std::endl;
     //   std::cout << in_center_check << std::endl;
@@ -195,7 +199,13 @@ void MainWindow::mvis_pub()
   mvis.difference[1] = diff_y;
   mvis.difference[2] = 0;
   mvis.in_cam = in_cam_check;
-  mvis.in_center = in_center_check;
+  mvis.in_center = qnode.in_center_check;
+
+  mvis.center_depth = qnode.depth_in_mm;
+  // 나중에 수정할 부분
+  mvis.high_depth = qnode.depth_in_mm;
+  mvis.low_depth = qnode.depth_in_mm;
+
   qnode.mani_vision_pub.publish(mvis);
 }
 

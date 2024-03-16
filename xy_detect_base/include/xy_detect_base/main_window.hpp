@@ -46,25 +46,26 @@ public:
   cv::Mat gray_clone;  // 흑백 이미지의 클론
   int value_hsv[6];    // hsv
 
-  float diff_x=0;
-  float diff_y=0;
+  float diff_x = 0;
+  float diff_y = 0;
   float img_center_x = 320.0;
   float img_center_y = 180.0;
-  bool in_cam_check=false;
-  bool in_center_check=false;
-  bool in_center_x=false;
-  bool in_center_y=false;
+  bool in_cam_check = false;
+
+  bool in_center_x = false;
+  bool in_center_y = false;
+  mobile_base_msgs::mani_vision mvis;
 
 public Q_SLOTS:
   void slotUpdateImg();
+
   void blue_img(cv::Mat& img);
   void Find_Binary_img(cv::Mat& img);
   cv::Mat Binary(cv::Mat& img, int val[]);
 
   void mvis_pub();
-  
+
 private:
-  mobile_base_msgs::mani_vision mvis;
   Ui::MainWindowDesign ui;
   QNode qnode;
 };
