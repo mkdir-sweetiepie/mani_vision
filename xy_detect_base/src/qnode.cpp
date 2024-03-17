@@ -107,16 +107,13 @@ void QNode::callbackDepth(const sensor_msgs::ImageConstPtr& image_msg, const sen
     return;
   }
 
-  if (in_center_check)
-  {
-    // 이미지의 중심 좌표 계산
-    int center_x = image.cols / 2;
-    int center_y = image.rows / 2;
+  // 이미지의 중심 좌표 계산
+  int center_x = image.cols / 2;
+  int center_y = image.rows / 2;
 
-    depth_in_mm = image.at<short int>(cv::Point(center_x, center_y));
-    // std::cout << "in_cam_check" << std::endl;
-    in_center_check = false;
-  }
+  depth_in_mm = image.at<short int>(cv::Point(center_x, center_y));
+  // std::cout << "in_cam_check" << std::endl;
+
 }
 
 }  // namespace xy_detect_base
