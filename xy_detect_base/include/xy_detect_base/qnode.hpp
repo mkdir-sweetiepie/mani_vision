@@ -59,10 +59,10 @@ public:
   bool isreceived = false;  // 수신 여부를 나타내는 플래그
 
   bool in_center_check = false;
-  float depth_in_mm;
+  float depth_in_mm = 0.0;
 
   image_transport::Subscriber subImage;  // 서브스크라이버
-
+  image_transport::CameraSubscriber sub_;
   void callbackImage(const sensor_msgs::ImageConstPtr& msg_img);  // 이미지 콜백 함수 선언
   void callbackDepth(const sensor_msgs::ImageConstPtr& image_msg, const sensor_msgs::CameraInfoConstPtr& info_msg);
 

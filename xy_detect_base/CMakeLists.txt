@@ -65,6 +65,6 @@ file(GLOB_RECURSE QT_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} FOLLOW_SYMLINK
 ##############################################################################
 
 add_executable(xy_detect_base ${QT_SOURCES} ${QT_RESOURCES_CPP} ${QT_FORMS_HPP} ${QT_MOC_HPP})
-target_link_libraries(xy_detect_base Qt5::Widgets Qt5::Gui ${QT_LIBRARIES} ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${OpenCV_LIBS})
+target_link_libraries(xy_detect_base Qt5::Widgets Qt5::Gui ${QT_LIBRARIES} ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${OpenCV_LIBS} realsense2)
 install(TARGETS xy_detect_base RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
