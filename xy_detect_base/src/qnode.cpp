@@ -111,6 +111,30 @@ void QNode::callbackDepth(const sensor_msgs::ImageConstPtr& image_msg, const sen
   int center_x = image.cols / 2;
   int center_y = image.rows / 2;
 
+  max_depth = std::numeric_limits<short int>::min();
+  min_depth = std::numeric_limits<short int>::max();
+
+  for (int y = 0; y < image.rows; ++y) 
+  {
+    for (int x = 0; x < image.cols; ++x) 
+    {
+      float depth = image.at<short int>(cv::Point(x, y));
+
+      if (depth == 0)
+        continue;
+      
+      if (depth > max_depth) 
+      {
+        max_depth = depth;
+      }
+      if (depth < min_depth) 
+      {
+        min_depth = depth;
+      }
+    }
+  }
+
+
   depth_in_mm = image.at<short int>(cv::Point(center_x, center_y));
   // std::cout << "in_cam_check" << std::endl;
 

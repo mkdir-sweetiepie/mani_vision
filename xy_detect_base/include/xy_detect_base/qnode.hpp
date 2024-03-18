@@ -59,7 +59,9 @@ public:
   bool isreceived = false;  // 수신 여부를 나타내는 플래그
 
   bool in_center_check = false;
-  float depth_in_mm = 0.0;
+  float depth_in_mm;
+  float max_depth;
+  float min_depth;
 
   image_transport::Subscriber subImage;  // 서브스크라이버
   image_transport::CameraSubscriber sub_;

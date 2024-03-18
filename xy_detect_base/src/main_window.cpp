@@ -203,8 +203,8 @@ void MainWindow::mvis_pub()
 
   mvis.center_depth = qnode.depth_in_mm;
   // 나중에 수정할 부분
-  mvis.high_depth = qnode.depth_in_mm;
-  mvis.low_depth = qnode.depth_in_mm;
+  mvis.high_depth = qnode.max_depth;
+  mvis.low_depth = qnode.min_depth;
 
   qnode.mani_vision_pub.publish(mvis);
 }
